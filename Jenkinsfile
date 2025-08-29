@@ -32,14 +32,11 @@ pipeline {
 
         stage('Deploy with Docker Compose') {
             steps {
-                echo "Deploying stack with Docker Compose..."
+                echo "Deploying stack with docker-compose..."
+                // Make sure we are in the directory with docker-compose.yml
                 dir("${WORKSPACE}") {
-                    // Stop old containers, ignore errors
-                    sh 'docker compose down || true'
-                    // Build images first
-                    sh 'docker compose build'
-                    // Start containers in detached mode
-                    sh 'docker compose up -d'
+                    sh 'docker-compose down || true'
+                    sh 'docker-compose up -d --build'
                 }
             }
         }
