@@ -10,7 +10,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "Cloning repository..."
-                git branch: 'main', url: 'https://github.com/Amanraj007/simple-Python-app-with-Prometheus-metrics.git', credentialsId: 'github-creds'
+                git branch: 'main', 
+                    url: 'https://github.com/Amanraj007/simple-Python-app-with-Prometheus-metrics.git', 
+                    credentialsId: 'github-creds'
             }
         }
 
@@ -33,9 +35,7 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 echo "Deploying stack with docker-compose..."
-                // Stop old containers, ignore errors if none running
                 sh 'docker-compose down || true'
-                // Start stack in detached mode
                 sh 'docker-compose up -d --build'
             }
         }
