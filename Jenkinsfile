@@ -36,7 +36,7 @@ pipeline {
                 // Stop old containers, ignore errors if none running
                 sh 'docker compose down || true'
                 // Start stack in detached mode
-                sh 'docker compose up -d --build'
+                sh 'docker compose up  --build'
             }
         }
     }
