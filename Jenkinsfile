@@ -10,9 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "Cloning repository..."
-                git branch: 'main', 
-                    url: 'https://github.com/Amanraj007/simple-Python-app-with-Prometheus-metrics.git', 
-                    credentialsId: 'github-creds'
+                git branch: 'main', url: 'https://github.com/Amanraj007/simple-Python-app-with-Prometheus-metrics.git', credentialsId: 'github-creds'
             }
         }
 
@@ -34,12 +32,11 @@ pipeline {
 
         stage('Deploy with Docker Compose') {
             steps {
-                echo "Giving execute permission to docker-compose..."
-                sh 'chmod +x /usr/bin/docker-compose || true'
-
                 echo "Deploying stack with docker-compose..."
-                sh '/usr/bin/docker-compose down || true'
-                sh '/usr/bin/docker-compose up -d --build'
+                // Use full path to docker-compose and give permission just in case
+                sh 'chmod +x /usr/local/bin/docker-compose || true'
+                sh '/usr/local/bin/docker-compose -f ./docker-compose.yml down || true'
+                sh '/usr/local/bin/docker-compose -f ./docker-compose.yml up -d --build'
             }
         }
     }
