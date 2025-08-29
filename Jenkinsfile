@@ -2,44 +2,41 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockers-creds')  // Jenkins DockerHub creds
+        DOCKERHUB_CREDENTIALS = credentials('dockers-creds')  // DockerHub credentials
         IMAGE_NAME = "aman65f/sample-app"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Amanraj007/simple-Python-app-with-Prometheus-metrics.git'
+                echo "Cloning repository..."
+                git branch: 'main', url: 'https://github.com/Amanraj007/simple-Python-app-with-Prometheus-metrics.git', credentialsId: 'github-creds'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    echo "Building Docker image..."
-                    sh 'docker build -t $IMAGE_NAME:latest ./app'
-                }
+                echo "Building Docker image..."
+                sh 'docker build -t $IMAGE_NAME:latest ./app'
             }
         }
 
         stage('Push to DockerHub') {
             steps {
-                script {
-                    echo "Pushing image to DockerHub..."
-                    withDockerRegistry([credentialsId: 'dockers-creds', url: '']) {
-                        sh 'docker push $IMAGE_NAME:latest'
-                    }
+                echo "Pushing Docker image to Docker Hub..."
+                withDockerRegistry([credentialsId: 'dockers-creds', url: '']) {
+                    sh 'docker push $IMAGE_NAME:latest'
                 }
             }
         }
 
-        stage('Deploy with Docker-Compose') {
+        stage('Deploy with Docker Compose') {
             steps {
-                script {
-                    echo "Deploying with docker-compose..."
-                    sh 'docker-compose down || true'
-                    sh 'docker-compose up -d --build'
-                }
+                echo "Deploying stack with docker-compose..."
+                // Stop old containers, ignore errors if none running
+                sh 'docker-compose down || true'
+                // Start stack in detached mode
+                sh 'docker-compose up -d --build'
             }
         }
     }
@@ -53,4 +50,3 @@ pipeline {
         }
     }
 }
-
