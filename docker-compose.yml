@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"    # Jenkins Web UI
+      - "50000:50000"  # For Jenkins agents
+    user: root
+    volumes:
+      - ./jenkins_home:/var/jenkins_home        # Jenkins data persistence
+      - /var/run/docker.sock:/var/run/docker.sock  # Allow Jenkins to use host Docker
+      - /usr/bin/docker:/usr/bin/docker            # Mount docker CLI
+    networks:
+      - devops
+
+  sample-app:
+    image: aman65f/sample-app:latest
+    build:
+      context: ./app              # <--- app is inside "app/" folder
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5000:5000"
+      - "8000:8000"
+    networks:
+      - devops
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - devops
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - devops
+
+volumes:
+  grafana_data:
+
+networks:
+  devops:
+    driver: bridge
+
