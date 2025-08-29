@@ -10,10 +10,9 @@ services:
       - "50000:50000"  # Jenkins agents
     user: root
     volumes:
-      - ./jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/usr/bin/docker
-      - /usr/local/bin/docker-compose:/usr/bin/docker-compose
+      - ./jenkins_home:/var/jenkins_home        # Persist Jenkins data
+      - /var/run/docker.sock:/var/run/docker.sock  # Allow Jenkins to access Docker on host
+      - /usr/bin/docker:/usr/bin/docker            # Mount Docker CLI
     networks:
       - devops
 
