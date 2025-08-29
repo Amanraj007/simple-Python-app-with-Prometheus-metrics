@@ -33,12 +33,12 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage('Deploy with Docker-Compose') {
             steps {
                 script {
                     echo "Deploying with docker-compose..."
-                    sh 'docker compose down || true'
-                    sh 'docker compose up -d --build'
+                    sh 'docker-compose down || true'
+                    sh 'docker-compose up -d --build'
                 }
             }
         }
