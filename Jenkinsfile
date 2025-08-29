@@ -32,11 +32,15 @@ pipeline {
 
         stage('Deploy with Docker Compose') {
             steps {
-                echo "Deploying stack with docker compose..."
-                // Stop old containers, ignore errors if none running
-                sh 'docker compose down || true'
-                // Start stack in detached mode
-                sh 'docker compose up  --build'
+                echo "Deploying stack with Docker Compose..."
+                dir("${WORKSPACE}") {
+                    // Stop old containers, ignore errors
+                    sh 'docker compose down || true'
+                    // Build images first
+                    sh 'docker compose build'
+                    // Start containers in detached mode
+                    sh 'docker compose up -d'
+                }
             }
         }
     }
