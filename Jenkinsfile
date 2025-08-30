@@ -30,13 +30,11 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker-Compose') {
+        stage('Deploy with Docker Compose') {
             steps {
                 echo "Deploying stack with docker-compose..."
-                // Use full path to docker-compose and give permission just in case
-                sh 'chmod +x /usr/local/bin/docker-compose || true'
-                sh '/usr/local/bin/docker-compose -f ./docker-compose.yml down || true'
-                sh '/usr/local/bin/docker-compose -f ./docker-compose.yml up -d --build'
+                sh 'docker-compose -f ./docker-compose.yml down || true'
+                sh 'docker-compose -f ./docker-compose.yml up -d --build'
             }
         }
     }
