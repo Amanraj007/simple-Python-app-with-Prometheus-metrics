@@ -30,7 +30,7 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage('Deploy with Docker-Compose') {
             steps {
                 echo "Deploying stack with docker-compose..."
                 // Use full path to docker-compose and give permission just in case
